@@ -20,7 +20,7 @@ file(GLOB HEADERS
     "inc/*.h"
 )
 
-project(trig_estimation CXX)
+project(Signal_processing CXX)
 include_directories(
     ${PROJECT_SOURCE_DIR}/inc ${PROJECT_SOURCE_DIR}/src
     )
