@@ -32,7 +32,7 @@ sample_train_t read_sample_train_csv
 )
 {
     std::ifstream in_csv(filepath);
-    assert(!in_csv.bad());
+    assert(in_csv.is_open());
 
     // one less sample than linecount, ignore header line
     size_t line_count = std::count(
