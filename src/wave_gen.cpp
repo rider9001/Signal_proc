@@ -26,6 +26,40 @@ void save_sample_train_csv
 }
 
 /// ------------------------------------------
+sample_train_t read_sample_train_csv
+(
+    const std::string& filepath
+)
+{
+    std::ifstream in_csv(filepath);
+    assert(!in_csv.bad());
+
+    // one less sample than linecount, ignore header line
+    size_t line_count = std::count(
+    std::istreambuf_iterator<char>(in_csv),
+    std::istreambuf_iterator<char>(), '\n') - 1;
+    in_csv.seekg(0);
+
+    sample_train_t read_samples(line_count);
+
+    std::string line;
+    // skip first line
+    std::getline(in_csv, line);
+    for(size_t i = 0; i < line_count; i++)
+    {
+        std::getline(in_csv, line);
+        size_t pos = line.find(',');
+        double time = atof(line.substr(0, pos).c_str());
+        double val = atof(line.substr(pos + 1, line.size() - 1).c_str());
+
+        read_samples.at(i) = {.val = val, .time = time};
+    }
+    in_csv.close();
+
+    return read_samples;
+}
+
+/// ------------------------------------------
 sample_train_t create_sinwave_sampletrain
 (
     const std::vector<wave_spec_t>& waves,
@@ -35,7 +69,6 @@ sample_train_t create_sinwave_sampletrain
 )
 {
     assert(start_time < end_time);
-    assert(start_time != end_time);
 
     // before starting, find the normalisation factor for the waves
     double norm_factor = 0;
@@ -74,7 +107,6 @@ sample_train_t create_noise_sampletrain
 )
 {
     assert(start_time < end_time);
-    assert(start_time != end_time);
 
     std::mt19937 generator(time(NULL));
     std::uniform_real_distribution<double> dist(-1, 1);

@@ -24,5 +24,8 @@ int main()
     auto noise = create_noise_sampletrain(0, 1, sample_freq);
     save_sample_train_csv("outputs", "noise", noise);
 
+    auto sin_read = read_sample_train_csv("outputs/sinmix.csv");
+    save_sample_train_csv("outputs", "sinread", sin_read);
+
     return 0;
 }

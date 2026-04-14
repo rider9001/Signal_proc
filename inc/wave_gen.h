@@ -11,6 +11,8 @@
 #include <fstream>
 #include <random>
 #include <cassert>
+#include <exception>
+#include <algorithm>
 
 #include "Complex.h"
 
@@ -20,10 +22,10 @@ struct wave_spec_t
     // Magnitude of wave (negative has effect of a -pi phase shift)
     double mag;
 
-    // frequency of sine wave
+    // frequency of sine wave, Hz
     double freq;
 
-    // phase shift of sine wave
+    // phase shift of sine wave, radians
     double phase;
 };
 
@@ -51,6 +53,17 @@ void save_sample_train_csv
     const std::string& save_dir,
     const std::string& name,
     const sample_train_t& sample_train
+);
+
+/// ------------------------------------------
+/// @brief Reads a csv sampletrain
+///
+/// @param filepath path to sampletrain csv
+///
+/// @return read sample train
+sample_train_t read_sample_train_csv
+(
+    const std::string& filepath
 );
 
 /// ------------------------------------------
