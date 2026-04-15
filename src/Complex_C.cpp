@@ -265,6 +265,18 @@ Complex_C_t raiseEComplex(const Complex_C_t& com)
 }
 
 ///--------------------------------------------------------
+Complex_C_t raiseEImagine(const double& img)
+{
+    // e^(b+ic) -> e^(0+ic) = (1)((cos c) + i(sin c))
+    // = cos(c) + i*sin(c)
+
+    return Complex_C_t{
+        cos(img),
+        sin(img)
+    };
+}
+
+///--------------------------------------------------------
 Complex_C_t powReal(const Complex_C_t& base, const double& raise)
 {
     // (a+ib)^N = (r^N)*(cos(Nθ) + i*sin(Nθ))

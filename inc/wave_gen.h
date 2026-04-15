@@ -29,6 +29,9 @@ struct wave_spec_t
     double phase;
 };
 
+/// @brief List of sine waves
+typedef std::vector<wave_spec_t> wavelist_t;
+
 /// @brief Struct for storing point in time space
 struct sample_p_t
 {
@@ -73,12 +76,12 @@ sample_train_t read_sample_train_csv
 /// @param waves list of waves to mix into simlated wave to sample
 /// @param start_time time to start simulating wave from
 /// @param end_time time to end wave simulation
-/// @param sample_freq rate at which to sample simulated wave
+/// @param sample_freq number of samples to generate per second
 ///
 /// @return vector of sample magnitudes and times
 sample_train_t create_sinwave_sampletrain
 (
-    const std::vector<wave_spec_t>& waves,
+    const wavelist_t& waves,
     const double& start_time,
     const double& end_time,
     const double& sample_freq

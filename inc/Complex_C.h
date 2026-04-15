@@ -311,6 +311,14 @@ std::ostream& operator<<(std::ostream& os, const Complex_C_t& com);
 Complex_C_t raiseEComplex(const Complex_C_t& com);
 
 ///--------------------------------------------------------
+/// @brief Raises eulers number by a pure imaginary value
+///
+/// @param img imaginary value
+///
+/// @return resulting complex number e^img
+Complex_C_t raiseEImagine(const double& img);
+
+///--------------------------------------------------------
 /// @brief Raises a complex number by a real power
 ///
 /// @param base complex number to raise

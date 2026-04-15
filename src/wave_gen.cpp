@@ -62,7 +62,7 @@ sample_train_t read_sample_train_csv
 /// ------------------------------------------
 sample_train_t create_sinwave_sampletrain
 (
-    const std::vector<wave_spec_t>& waves,
+    const wavelist_t& waves,
     const double& start_time,
     const double& end_time,
     const double& sample_freq
@@ -78,7 +78,7 @@ sample_train_t create_sinwave_sampletrain
     }
 
     // calculate time step and presize vector with needed space
-    double time_step = (end_time - start_time) / sample_freq;
+    double time_step = 1 / sample_freq;
     size_t sample_count = std::ceil((end_time - start_time) / time_step);
 
     sample_train_t out_samples(sample_count);
@@ -89,7 +89,7 @@ sample_train_t create_sinwave_sampletrain
         double cur_time = index * time_step + start_time;
         for(auto wave : waves)
         {
-            point_res += wave.mag * sin(wave.freq * cur_time + wave.phase);
+            point_res += wave.mag * sin(wave.freq * 2 * M_PI * cur_time + wave.phase);
         }
         point_res /= norm_factor;
         out_samples.at(index) = {.val = point_res, .time = cur_time};

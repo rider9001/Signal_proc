@@ -24,4 +24,6 @@ project(Signal_processing CXX)
 include_directories(
     ${PROJECT_SOURCE_DIR}/inc ${PROJECT_SOURCE_DIR}/src
     )
-add_executable(wave_gen wave_gen_main.cpp ${SOURCES})
+
+add_executable(wave_gen mains/wave_gen_main.cpp ${SOURCES})
+add_executable(fourier mains/fourier_transform_main.cpp ${SOURCES})
