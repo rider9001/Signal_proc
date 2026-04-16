@@ -32,26 +32,133 @@ wavelist_t DFT(
 {
     const double time_delta = sample_points.at(1).time - sample_points.at(0).time;
     //freq = k / (sampleStep * sampleSize)
-    const double freq_scale = 1 / (time_delta * sample_points.size());
+    const double freq_scale = 1.0 / (time_delta * sample_points.size());
     const double neg_rad_scale = -(2 * M_PI) / sample_points.size();
 
     wavelist_t FT_points(sample_points.size() / 2);
 
     for(size_t k = 0; k < sample_points.size() / 2; k++)
     {
-        Complex_C_t complex_res = {0,0};
-        double k_rad_scale = neg_rad_scale * k;
-
-        for(size_t sample = 0; sample < sample_points.size(); sample++)
-        {
-            Complex_C_t e_raise = raiseEImagine(k_rad_scale * sample);
-            complex_res += e_raise * sample_points.at(sample).val;
-        }
-
-        FT_points.at(k).mag = complex_res.absolute();
+        double k_pow = k * neg_rad_scale;
+        FT_points.at(k) = DFT_point(sample_points, k_pow);
         FT_points.at(k).freq = k * freq_scale;
-        FT_points.at(k).phase = complex_res.argument();
+
+        #ifndef NO_PROG_PRINT
+        std::cout << k + 1 << " / " << sample_points.size() / 2 << "\r";
+        #endif
     }
 
     return FT_points;
+}
+
+/// ------------------------------------------
+wave_spec_t DFT_point(
+    const sample_train_t& sample_points,
+    const double &k_pow
+)
+{
+    Complex_C_t complex_res = {0,0};
+    for(size_t sample = 0; sample < sample_points.size(); sample++)
+    {
+        Complex_C_t e_raise = raiseEImagine(k_pow * sample);
+        complex_res += e_raise * sample_points.at(sample).val;
+    }
+
+    return {
+        .mag = complex_res.absolute(),
+        // freq is calculated in main DFT function
+        .freq = 0,
+        .phase = complex_res.argument()
+    };
+}
+
+/// ------------------------------------------
+wavelist_t FFT(
+    const sample_train_t& sample_points
+)
+{
+    // Check if sample count is a power of 2
+    size_t sample_len = sample_points.size();
+    if ((sample_len & (sample_len - 1)) != 0)
+    {
+        // extend the count to the next highest power if not a power of 2
+        sample_len = pow(2, std::ceil(log2(sample_len)));
+    }
+
+    const double time_delta = sample_points.at(1).time - sample_points.at(0).time;
+    //freq = k / (sampleStep * sampleSize)
+    const double freq_scale = 1.0 / (time_delta * sample_len);
+
+    // create sample train with padded zero entires
+    std::vector<Complex_C_t> used_points(sample_len, {0, 0});
+    for(size_t i = 0; i < sample_points.size(); i++)
+    {
+        used_points[i].m_real = sample_points[i].val;
+    }
+
+    wavelist_t FT_points(sample_len / 2);
+
+    for(size_t k = 0; k < sample_len / 2; k++)
+    {
+        double k_rad_scale = -(2 * M_PI) * k;
+        FT_points.at(k) = FFT_point(used_points, k_rad_scale);
+        FT_points.at(k).freq = freq_scale * k;
+
+        #ifndef NO_PROG_PRINT
+        std::cout << k + 1 << " / " << sample_len / 2 << "\r";
+        #endif
+    }
+
+    return FT_points;
+}
+
+/// ------------------------------------------
+wave_spec_t FFT_point(
+    const std::vector<Complex_C_t>& sample_points,
+    const double &k_pow
+)
+{
+    const size_t N = sample_points.size();
+    size_t step = 2;
+
+    Complex_C_t *working_vec, *result_vec;
+
+    // fill result vector with sample point data
+    result_vec = new Complex_C_t[N];
+    std::copy(sample_points.begin(), sample_points.end(), result_vec);
+
+    while(step <= N)
+    {
+        // pass previous results onto working vector
+        working_vec = result_vec;
+
+        // used multiple times, precalculate
+        const size_t result_width = N / step;
+
+        // create new buffer for this rounds results
+        result_vec = (Complex_C_t*) malloc(sizeof(Complex_C_t) * result_width);
+
+        Complex_C_t E_NEGIK2PI_N = raiseEImagine(k_pow / step);
+        for (size_t sample = 0; sample < result_width; sample++)
+        {
+            result_vec[sample] = working_vec[sample] +
+            working_vec[sample + result_width] * E_NEGIK2PI_N;
+        }
+
+        // double step size
+        step *= 2;
+
+        // clear memory of working buffer
+        delete[] working_vec;
+    }
+
+    Complex_C_t result = result_vec[0];
+    delete[] result_vec;
+
+    return
+    {
+        .mag = result.absolute(),
+        .freq = 0,
+        .phase = result.argument()
+    };
 }

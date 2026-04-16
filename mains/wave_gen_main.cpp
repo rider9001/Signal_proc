@@ -13,14 +13,14 @@ using std::endl;
 
 int main()
 {
-    const double sample_freq = 200;
+    const double sample_freq = pow(2, 16);
 
     const double start_time = 0;
     const double end_time = 1;
 
-    wave_spec_t sinwav = {.mag = 1, .freq = 10, .phase = 0};
-    wave_spec_t sin2 = {.mag = 1, .freq = 15, .phase = 0};
-    wave_spec_t sin3 = {.mag = 1, .freq = 24, .phase = 0};
+    wave_spec_t sinwav = {.mag = 1, .freq = 3e3, .phase = 0};
+    wave_spec_t sin2 = {.mag = 1, .freq = 100, .phase = 0};
+    wave_spec_t sin3 = {.mag = 1, .freq = 4e3, .phase = 0};
 
     auto sin_mixed = create_sinwave_sampletrain({sinwav, sin2, sin3}, start_time, end_time, sample_freq);
     save_sample_train_csv("outputs", "sinmix", sin_mixed);

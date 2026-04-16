@@ -13,6 +13,8 @@
 #include "Complex.h"
 #include "wave_gen.h"
 
+#define NO_PROG_PRINT
+
 /// ------------------------------------------
 /// @brief Saves fourier points as a csv file
 ///
@@ -32,7 +34,47 @@ void save_FT_points_csv
 ///
 /// @param sample_points points of a sample to transform
 ///
-/// @return freq/mag data resulting from the transform
+/// @return freq/mag/phase data resulting from the transform
 wavelist_t DFT(
     const sample_train_t& sample_points
+);
+
+/// ------------------------------------------
+/// @brief Calculates DFT for a single k point
+///
+/// @param sample_points points of a sample to transform
+/// @param k_pow current k power
+///
+/// @return DFT of sample for given k column
+wave_spec_t DFT_point(
+    const sample_train_t& sample_points,
+    const double &k_pow
+);
+
+/// ------------------------------------------
+/// @brief Performs discrete fourier transform on a set of sample points
+/// Returns # wave specs as the nearest smaller power of 2
+///
+/// Note: FFT can only be done on a sample list size of a power of 2
+/// Sample will be extended with zero samples to reach next highest power
+/// This should not affect the result, as they will not contribute energy
+/// to any frequency bucket as they are zero.
+///
+/// @param sample_points sampled points to transform
+///
+/// @return freq/mag/phase data resulting from the transform
+wavelist_t FFT(
+    const sample_train_t& sample_points
+);
+
+/// ------------------------------------------
+/// @brief Calculates FFT for a single k point
+///
+/// @param sample_points points of a sample to transform
+/// @param k_pow current k power
+///
+/// @return DFT of sample for given k column
+wave_spec_t FFT_point(
+    const std::vector<Complex_C_t>& sample_points,
+    const double &k_pow
 );
