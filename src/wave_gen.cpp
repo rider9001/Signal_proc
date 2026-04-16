@@ -16,6 +16,7 @@ void save_sample_train_csv
 {
     std::string fullpath = save_dir + "/" + name + ".csv";
     std::ofstream out_csv(fullpath);
+    assert(out_csv.is_open());
     out_csv << "time,val\n";
 
     for(auto sample : sample_train)
