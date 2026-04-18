@@ -27,3 +27,4 @@ include_directories(
 
 add_executable(wave_gen mains/wave_gen_main.cpp ${SOURCES})
 add_executable(fourier mains/fourier_transform_main.cpp ${SOURCES})
+add_executable(filter mains/filter_main.cpp ${SOURCES})

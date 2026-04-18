@@ -120,9 +120,10 @@ sample_train_t create_noise_sampletrain
 
     for(size_t index = 0; index < sample_count; index++)
     {
-        double point_res = dist(generator);
-        double cur_time = index * time_step + start_time;
-        out_samples.at(index) = {.val = point_res, .time = cur_time};
+        out_samples.at(index) = {
+            .val = dist(generator),
+            .time = index * time_step + start_time
+        };
     }
 
     return out_samples;
