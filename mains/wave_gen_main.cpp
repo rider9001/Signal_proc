@@ -13,7 +13,7 @@ using std::endl;
 
 int main()
 {
-    const double sample_freq = 50e3;
+    const double sample_freq = 60e3;
 
     const double start_time = 0;
     const double end_time = 1;
