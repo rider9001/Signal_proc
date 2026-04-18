@@ -7,8 +7,8 @@
 #include <iostream>
 #include <sys/time.h>
 
-#include "inc/wave_gen.h"
-#include "inc/filter.h"
+#include "../inc/wave_gen.h"
+#include "../inc/filter.h"
 
 using std::cout;
 using std::endl;
