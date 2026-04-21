@@ -23,6 +23,8 @@ unsigned long getMicrotime()
 
 int main(int argc, char** argv)
 {
+    const size_t threads = 4;
+
     size_t start_time, end_time;
 
     if (argc != 4)
@@ -38,7 +40,7 @@ int main(int argc, char** argv)
     cout << "Saving to: " << argv[2] << "/" << argv[3] << ".csv" << std::endl;
 
     start_time = getMicrotime();
-    auto FTT_data = FFT(sample_data);
+    auto FTT_data = FFT_threaded(sample_data, threads);
     end_time = getMicrotime();
     cout << "Done in " << end_time - start_time << " micros" << endl;
 

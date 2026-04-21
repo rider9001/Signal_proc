@@ -9,11 +9,15 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 #include "Complex.h"
 #include "wave_gen.h"
 
 #define NO_PROG_PRINT
+
+/// @brief Default number of threads to use, 1/4 of compiler machine threads
+#define DEFAULT_THREAD_COUNT (std::thread::hardware_concurrency() / 4)
 
 /// ------------------------------------------
 /// @brief Saves fourier points as a csv file
@@ -52,7 +56,7 @@ wave_spec_t DFT_point(
 );
 
 /// ------------------------------------------
-/// @brief Performs discrete fourier transform on a set of sample points
+/// @brief Performs fast fourier transform on a set of sample points
 /// Returns # wave specs as the nearest smaller power of 2
 ///
 /// Note: FFT can only be done on a sample list size of a power of 2
@@ -65,6 +69,19 @@ wave_spec_t DFT_point(
 /// @return freq/mag/phase data resulting from the transform
 wavelist_t FFT(
     const sample_train_t& sample_points
+);
+
+/// ------------------------------------------
+/// @brief Performs fast fourier transform on a set of sample points
+/// Threads
+///
+/// @param sample_points sampled points to transform
+/// @param thread_count threads to use
+///
+/// @return freq/mag/phase data resulting from the transform
+wavelist_t FFT_threaded(
+    const sample_train_t& sample_points,
+    const size_t thread_count = DEFAULT_THREAD_COUNT
 );
 
 /// ------------------------------------------

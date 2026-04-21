@@ -100,13 +100,83 @@ wavelist_t FFT(
 
     for(size_t k = 0; k < sample_len / 2; k++)
     {
-        double k_rad_scale = -(2 * M_PI) * k;
+        const double k_rad_scale = -(2 * M_PI) * k;
         FT_points.at(k) = FFT_point(used_points, k_rad_scale);
         FT_points.at(k).freq = freq_scale * k;
 
         #ifndef NO_PROG_PRINT
         std::cout << k + 1 << " / " << sample_len / 2 << "\r";
         #endif
+    }
+
+    return FT_points;
+}
+
+/// ------------------------------------------
+wavelist_t FFT_threaded(
+    const sample_train_t& sample_points,
+    const size_t thread_count
+)
+{
+    // Check if sample count is a power of 2
+    size_t sample_len = sample_points.size();
+    if ((sample_len & (sample_len - 1)) != 0)
+    {
+        // extend the count to the next highest power if not a power of 2
+        sample_len = pow(2, std::ceil(log2(sample_len)));
+    }
+
+    const double time_delta = sample_points.at(1).time - sample_points.at(0).time;
+    //freq = k / (sampleStep * sampleSize)
+    const double freq_scale = 1.0 / (time_delta * sample_len);
+
+    // create sample train with padded zero entires
+    std::vector<Complex_C_t> used_points(sample_len, {0, 0});
+    for(size_t i = 0; i < sample_points.size(); i++)
+    {
+        used_points[i].m_real = sample_points[i].val;
+    }
+
+    wavelist_t FT_points(sample_len / 2);
+
+    // setup lambda for the worker threads
+    auto FFT_worker_lambda = [](
+        std::vector<Complex_C_t>& used_points,
+        wavelist_t& FT_points,
+        const size_t& thread_count,
+        const size_t& thread_num,
+        const double& freq_scale
+    )
+    {
+        // start each thread in FFT col of its thread number, each thread steps forward the number of threads
+        // e.g: start (2/2) thread at index 1, 1->3->5 etc
+        for(size_t k = thread_num; k < FT_points.size() / 2; k += thread_count)
+        {
+            const double k_rad_scale = -(2 * M_PI) * k;
+            FT_points.at(k) = FFT_point(used_points, k_rad_scale);
+            FT_points.at(k).freq = freq_scale * k;
+        }
+    };
+
+    std::vector<std::thread> thread_list(thread_count);
+
+    // dispatch worker threads
+    for(size_t thread = 0; thread < thread_list.size(); thread++)
+    {
+        thread_list[thread] = std::thread(
+            FFT_worker_lambda,
+            std::ref(used_points),
+            std::ref(FT_points),
+            std::ref(thread_count),
+            std::ref(thread),
+            std::ref(freq_scale)
+        );
+    }
+
+    // wait for threads to finish
+    for(size_t thread = 0; thread < thread_list.size(); thread++)
+    {
+        thread_list[thread].join();
     }
 
     return FT_points;
