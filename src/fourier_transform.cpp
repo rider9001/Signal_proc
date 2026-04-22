@@ -65,7 +65,7 @@ wave_spec_t DFT_point(
     }
 
     return {
-        .mag = complex_res.absolute(),
+        .mag = complex_res.absolute() / sample_points.size(),
         // freq is calculated in main DFT function
         .freq = 0,
         .phase = complex_res.argument()
@@ -227,7 +227,7 @@ wave_spec_t FFT_point(
 
     return
     {
-        .mag = result.absolute(),
+        .mag = result.absolute() / N,
         .freq = 0,
         .phase = result.argument()
     };

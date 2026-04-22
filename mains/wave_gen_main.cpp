@@ -13,7 +13,7 @@ using std::endl;
 
 int main()
 {
-    const double sample_freq = pow(2,17);
+    const double sample_freq = pow(2,18);
 
     const double start_time = 0;
     const double end_time = 1;
@@ -27,6 +27,9 @@ int main()
 
     auto noise = create_noise_sampletrain(start_time, end_time, sample_freq);
     save_sample_train_csv("outputs", "noise", noise);
+
+    auto square = create_square_sampletrain(1e3, start_time, end_time, sample_freq);
+    save_sample_train_csv("outputs", "square", square);
 
     return 0;
 }

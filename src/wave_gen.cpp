@@ -128,3 +128,40 @@ sample_train_t create_noise_sampletrain
 
     return out_samples;
 }
+
+/// ------------------------------------------
+sample_train_t create_square_sampletrain
+(
+    const double& square_freq,
+    const double& start_time,
+    const double& end_time,
+    const double& sample_freq
+)
+{
+    assert(start_time < end_time);
+
+    // calculate time step and presize vector with needed space
+    double time_step = (end_time - start_time) / sample_freq;
+    size_t sample_count = std::ceil((end_time - start_time) / time_step);
+
+    const double squ_period = 1.0 / square_freq;
+
+    sample_train_t out_samples(sample_count);
+    bool state = true;
+    double elapsed = 0;
+    for(size_t index = 0; index < sample_count; index++)
+    {
+        if ((index * time_step) - elapsed > squ_period / 2)
+        {
+            elapsed = index * time_step;
+            state = !state;
+        }
+
+        out_samples.at(index) = {
+            .val = (state) ? 1.0 : -1.0,
+            .time = index * time_step + start_time
+        };
+    }
+
+    return out_samples;
+}

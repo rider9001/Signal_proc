@@ -90,7 +90,7 @@ wavelist_t FFT_threaded(
 /// @param sample_points points of a sample to transform
 /// @param k_pow current k power
 ///
-/// @return DFT of sample for given k column
+/// @return DFT of sample for given k column, normalised by number of samples
 wave_spec_t FFT_point(
     const std::vector<Complex_C_t>& sample_points,
     const double &k_pow

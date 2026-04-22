@@ -89,7 +89,7 @@ sample_train_t create_sinwave_sampletrain
 
 /// ------------------------------------------
 /// @brief Generates sampletrain of white noise
-/// Uses std::default_random_engine to generate random noise
+/// Uses std::mt19937 to generate random noise
 ///
 /// Note: noise is random at all points, so sample freq just
 /// controls number of samples returned
@@ -98,9 +98,26 @@ sample_train_t create_sinwave_sampletrain
 /// @param end_time time to end wave simulation
 /// @param sample_freq rate at which to sample simulated wave
 ///
-/// @return
+/// @return noise sample train
 sample_train_t create_noise_sampletrain
 (
+    const double& start_time,
+    const double& end_time,
+    const double& sample_freq
+);
+
+/// ------------------------------------------
+/// @brief Generate a square wave sample train between +-1
+///
+/// @param square_freq frequency of square wave
+/// @param start_time time to start simulating wave from
+/// @param end_time time to end wave simulation
+/// @param sample_freq rate at which to sample simulated wave
+///
+/// @return square wave sampletrain
+sample_train_t create_square_sampletrain
+(
+    const double& square_freq,
     const double& start_time,
     const double& end_time,
     const double& sample_freq
