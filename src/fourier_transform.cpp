@@ -208,7 +208,8 @@ wave_spec_t FFT_point(
         // create new buffer for this rounds results
         result_vec = (Complex_C_t*) malloc(sizeof(Complex_C_t) * result_width);
 
-        Complex_C_t E_NEGIK2PI_N = raiseEImagine(k_pow / step);
+        const Complex_C_t E_NEGIK2PI_N = raiseEImagine(k_pow / step);
+
         for (size_t sample = 0; sample < result_width; sample++)
         {
             result_vec[sample] = working_vec[sample] +

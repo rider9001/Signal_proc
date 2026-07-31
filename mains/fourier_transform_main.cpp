@@ -23,7 +23,7 @@ unsigned long getMicrotime()
 
 int main(int argc, char** argv)
 {
-    const size_t threads = 4;
+    const size_t threads = 8;
 
     size_t start_time, end_time;
 
